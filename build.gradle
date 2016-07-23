@@ -33,6 +33,10 @@ idea {
         languageLevel = versions.java
         vcs = 'Git'
     }
+
+	module {
+		excludeDirs += file('gradle')
+	}
 }
 
 repositories {
@@ -44,7 +48,9 @@ configurations {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
+    compile project(':spring-fx'),
+        project(':telemetry'),
+        "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
         "org.slf4j:slf4j-api:$versions.slf4j",
         "org.springframework:spring-core:$versions.spring.framework",
         "org.springframework:spring-context:$versions.spring.framework",

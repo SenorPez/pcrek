@@ -1,0 +1,22 @@
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+
+sourceCompatibility = versions.java
+targetCompatibility = versions.java
+
+repositories {
+    jcenter()
+}
+
+configurations {
+    compile.transitive = false
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
+        "org.slf4j:slf4j-api:$versions.slf4j",
+        "org.springframework:spring-context:$versions.spring.framework"
+
+    testCompile "org.jetbrains.kotlin:kotlin-test:$versions.kotlin",
+        "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
+}
