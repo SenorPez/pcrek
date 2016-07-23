@@ -22,7 +22,6 @@
 			<appender-ref ref="out"/>
 			<appender-ref ref="err"/>
 		</root>
-		<logger name="io.whatthedill.pcre" level="TRACE"/>
-		<logger name="io.whatthedill.spring.fx.ApplicationContextFxmlLoader" level="TRACE"/>
+		<logger name="io.whatthedill" level="TRACE"/>
 	</loggers>
 </configuration>

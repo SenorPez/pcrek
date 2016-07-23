@@ -24,7 +24,7 @@ public class AppConfig {
 	}
 
 	@Bean
-	public BorderPane rootLayout(
+	public BorderPane mainLayout(
 		@Autowired SpringFxmlLoader springFxmlLoader,
 		@Value("classpath:/io/whatthedill/pcre/Main.fxml") Resource resource
 	) {

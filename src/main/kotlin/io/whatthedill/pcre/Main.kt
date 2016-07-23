@@ -25,15 +25,21 @@ internal class Main : Application() {
             val loading = showLoading()
             loadApplication(loading, primaryStage)
 
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
             LOGGER.error("Unable to start application, exiting...", e)
-            System.exit(1)
+            Platform.exit()
         }
     }
 
     private fun loadApplication(loading: Stage, primaryStage: Stage) {
         val thread = Thread({
-            applicationContext = AnnotationConfigApplicationContext(AppConfig::class.java)
+            try {
+                applicationContext = AnnotationConfigApplicationContext(AppConfig::class.java)
+            } catch (e: Exception) {
+                LOGGER.error("Error loadding application", e)
+                Platform.exit()
+            }
+
             Platform.runLater {
                 show(applicationContext!!, primaryStage)
                 loading.close()
@@ -55,7 +61,7 @@ internal class Main : Application() {
     }
 
     private fun show(appContext: ApplicationContext, primaryStage: Stage) {
-        val rootLayout = appContext.getBean("rootLayout", BorderPane::class.java)
+        val rootLayout = appContext.getBean("mainLayout", BorderPane::class.java)
         val overview = appContext.getBean("telemetrySessionOverview", AnchorPane::class.java)
         rootLayout.center = overview
 
