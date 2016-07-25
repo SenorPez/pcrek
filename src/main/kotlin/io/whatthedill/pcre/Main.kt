@@ -1,80 +1,108 @@
 package io.whatthedill.pcre
 
+import javafx.animation.FadeTransition
 import javafx.application.Application
 import javafx.application.Platform
+import javafx.concurrent.Task
+import javafx.concurrent.Worker
+import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.DialogPane
-import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.BorderPane
-import javafx.stage.Modality
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import javafx.util.Duration
 import org.slf4j.LoggerFactory
-import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.core.io.ClassPathResource
 
 internal class Main : Application() {
     private var applicationContext: ConfigurableApplicationContext? = null
 
     override fun start(primaryStage: Stage) {
         Platform.setImplicitExit(true)
-        try {
-            val loading = showLoading()
-            loadApplication(loading, primaryStage)
 
-        } catch (e: Exception) {
-            LOGGER.error("Unable to start application, exiting...", e)
-            Platform.exit()
+        val loading: Parent = showLoadingDialog(primaryStage)
+
+        getApplicationContextTask().run {
+            stateProperty().addListener { observableValue, oldState, newState ->
+                when (newState!!) {
+                    Worker.State.SUCCEEDED -> {
+                        showMainWindow(loading, primaryStage)
+                    }
+                    Worker.State.FAILED -> {
+                        LOGGER.error("error loading application context, exiting", exception)
+                        Platform.exit()
+                    }
+                    Worker.State.READY -> {
+                        LOGGER.trace("ready to load application context")
+                    }
+                    Worker.State.SCHEDULED -> {
+                        LOGGER.trace("application context scheduled for loading")
+                    }
+                    Worker.State.RUNNING -> {
+                        LOGGER.trace("application context is being loaded")
+                    }
+                    Worker.State.CANCELLED -> {
+                        LOGGER.trace("application context loading was cancelled, exiting", exception)
+                        Platform.exit()
+                    }
+                }
+            }
+
+            Thread(this).run {
+                name = "ApplicationContextStartup"
+                start()
+            }
         }
     }
 
-    private fun loadApplication(loading: Stage, primaryStage: Stage) {
-        val thread = Thread({
-            try {
-                applicationContext = AnnotationConfigApplicationContext(AppConfig::class.java)
-            } catch (e: Exception) {
-                LOGGER.error("Error loadding application", e)
-                Platform.exit()
-            }
+    private fun showMainWindow(loading: Parent, primaryStage: Stage) {
+        LOGGER.trace("application context loaded")
+        primaryStage.toFront()
 
-            Platform.runLater {
-                show(applicationContext!!, primaryStage)
-                loading.close()
-            }
-        }, "ApplicationInitialization")
-        thread.isDaemon = true
-        thread.start()
+        FadeTransition(Duration.seconds(1.2), loading).apply {
+            this.fromValue = 1.toDouble()
+            this.toValue = 0.toDouble()
+            this.onFinished = EventHandler { primaryStage.close() }
+            this.play()
+        }
+
+        val mainStage = applicationContext!!.getBean("mainStage", Stage::class.java)
+        mainStage.show()
     }
 
-    private fun showLoading(): Stage {
-        val modal = Stage()
-        val loader = FXMLLoader()
-        val loading = loader.load<Parent>(javaClass.getResourceAsStream("AppLoading.fxml")) as DialogPane
-        modal.scene = Scene(loading)
-        modal.initModality(Modality.APPLICATION_MODAL)
-        modal.initStyle(StageStyle.UNDECORATED)
-        modal.show()
-        return modal
+    private fun getApplicationContextTask(): Task<ConfigurableApplicationContext> {
+        return object : Task<ConfigurableApplicationContext>() {
+            override fun call(): ConfigurableApplicationContext {
+                return AnnotationConfigApplicationContext().apply {
+                    applicationContext = this
+                    register(ApplicationConfig::class.java)
+                    refresh()
+                }
+            }
+        }
     }
 
-    private fun show(appContext: ApplicationContext, primaryStage: Stage) {
-        val rootLayout = appContext.getBean("mainLayout", BorderPane::class.java)
-        val overview = appContext.getBean("telemetrySessionOverview", AnchorPane::class.java)
-        rootLayout.center = overview
-
-        primaryStage.title = "Project CARS Replay Enhancer"
-        primaryStage.scene = Scene(rootLayout)
-        primaryStage.show()
+    private fun showLoadingDialog(primaryStage: Stage): Parent {
+        return ClassPathResource("/io/whatthedill/pcre/Loading.fxml").inputStream.use { fxml ->
+            val fxmlLoader = FXMLLoader()
+            fxmlLoader.load<Parent>(fxml).apply {
+                primaryStage.scene = Scene(this)
+                primaryStage.initStyle(StageStyle.UNDECORATED)
+                primaryStage.show()
+            }
+        }
     }
 
     override fun stop() {
         super.stop()
-        LOGGER.debug("Closing application context...")
-        applicationContext?.stop()
-        LOGGER.trace("Application context closed")
+        applicationContext?.apply {
+            LOGGER.debug("Closing application context...")
+            this.stop()
+            LOGGER.trace("Application context closed")
+        }
     }
 
     companion object {

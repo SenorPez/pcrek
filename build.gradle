@@ -52,6 +52,7 @@ dependencies {
         project(':telemetry'),
         "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
         "org.slf4j:slf4j-api:$versions.slf4j",
+        "org.slf4j:slf4j-ext:$versions.slf4j",
         "org.springframework:spring-core:$versions.spring.framework",
         "org.springframework:spring-context:$versions.spring.framework",
         "org.springframework:spring-beans:$versions.spring.framework"

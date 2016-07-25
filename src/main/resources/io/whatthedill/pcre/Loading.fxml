@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.ProgressBar?>
+
+<DialogPane headerText="Loading..." xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <Group>
+         <children>
+            <ProgressBar layoutX="-10.0" layoutY="-5.0" prefWidth="200.0">
+               <padding>
+                  <Insets top="14.0" />
+               </padding></ProgressBar>
+         </children>
+      </Group>
+   </content>
+</DialogPane>

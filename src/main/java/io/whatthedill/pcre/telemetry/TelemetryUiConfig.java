@@ -1,34 +1,22 @@
-package io.whatthedill.pcre;
+package io.whatthedill.pcre.telemetry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
 
-import io.whatthedill.spring.fx.ApplicationContextFxmlLoader;
 import io.whatthedill.spring.fx.SpringFxmlLoader;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 
 @Configuration
-@ComponentScan({"io.whatthedill.pcre"})
-public class AppConfig {
+@Lazy
+public class TelemetryUiConfig {
 
 	@Bean
-	@Scope("prototype")
-	public SpringFxmlLoader getSpringFxmlLoader() {
-		return new ApplicationContextFxmlLoader();
-	}
-
-	@Bean
-	public BorderPane mainLayout(
-		@Autowired SpringFxmlLoader springFxmlLoader,
-		@Value("classpath:/io/whatthedill/pcre/Main.fxml") Resource resource
-	) {
-		return (BorderPane) springFxmlLoader.load(resource);
+	public OverviewController overviewController() {
+		return new OverviewController();
 	}
 
 	@Bean

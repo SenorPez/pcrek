@@ -22,6 +22,8 @@
 			<appender-ref ref="out"/>
 			<appender-ref ref="err"/>
 		</root>
-		<logger name="io.whatthedill" level="TRACE"/>
+		<logger name="org.springframework.beans.factory" level="INFO"/>
+		<logger name="org.springframework.core.env" level="INFO"/>
+		<!--<logger name="io.whatthedill" level="TRACE"/>-->
 	</loggers>
 </configuration>

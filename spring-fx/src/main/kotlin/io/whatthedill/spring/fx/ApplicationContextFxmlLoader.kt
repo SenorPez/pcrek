@@ -19,9 +19,9 @@ internal class ApplicationContextFxmlLoader : SpringFxmlLoader, ApplicationConte
         fxml.inputStream.use { fxmlStream ->
             val loader = FXMLLoader()
             loader.setControllerFactory { clazz ->
-                LOGGER.debug("Getting bean [{}]", clazz)
+                LOGGER.debug("Getting bean of type [{}]", clazz)
                 val bean = applicationContext!!.getBean(clazz)
-                LOGGER.trace("Found [{}] for bean of type [{}]", bean, clazz)
+                LOGGER.trace("Found bean [{}] as the type [{}]", bean, clazz)
                 bean
             }
             return loader.load<Parent>(fxmlStream)
