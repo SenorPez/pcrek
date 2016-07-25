@@ -18,7 +18,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.io.ClassPathResource
 
 internal class Main : Application() {
-    private var applicationContext: ConfigurableApplicationContext? = null
+    private lateinit var applicationContext: ConfigurableApplicationContext
 
     override fun start(primaryStage: Stage) {
         Platform.setImplicitExit(true)
@@ -69,7 +69,7 @@ internal class Main : Application() {
             this.play()
         }
 
-        val mainStage = applicationContext!!.getBean("mainStage", Stage::class.java)
+        val mainStage = applicationContext.getBean("mainStage", Stage::class.java)
         mainStage.show()
     }
 
@@ -98,9 +98,11 @@ internal class Main : Application() {
 
     override fun stop() {
         super.stop()
-        applicationContext?.apply {
+        applicationContext.apply {
             LOGGER.debug("Closing application context...")
-            this.stop()
+            if (this.isActive) {
+                this.stop()
+            }
             LOGGER.trace("Application context closed")
         }
     }
