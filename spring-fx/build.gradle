@@ -18,5 +18,6 @@ dependencies {
         "org.springframework:spring-context:$versions.spring.framework"
 
     testCompile "org.jetbrains.kotlin:kotlin-test:$versions.kotlin",
-        "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
+        "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin",
+        "junit:junit:$versions.junit"
 }
