@@ -1,4 +1,4 @@
-# pcrek [![Build Status](https://travis-ci.org/travis-ci/travis-web.svg?branch=master)](https://travis-ci.org/travis-ci/travis-web)
+# pcrek [![Build Status](https://travis-ci.org/jacobwu/pcrek.svg?branch=master)](https://travis-ci.org/jacobwu/pcrek)
 Kotlin port of [Project CARS Replay Enhancer][1]
 
 ## Description
