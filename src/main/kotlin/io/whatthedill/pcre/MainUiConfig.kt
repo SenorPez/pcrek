@@ -19,17 +19,6 @@ import org.springframework.core.io.Resource
 @Configuration
 @Lazy
 open class MainUiConfig {
-
-    @Bean
-    open fun mainController(): MainController {
-        return MainController()
-    }
-
-    @Bean
-    open fun mainMenuController(): MainMenuController {
-        return MainMenuController()
-    }
-
     @Bean
     open fun mainMenu(
             @Autowired springFxmlLoader: SpringFxmlLoader,

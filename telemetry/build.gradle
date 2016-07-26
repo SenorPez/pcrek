@@ -14,7 +14,11 @@ configurations {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin",
-        "org.slf4j:slf4j-api:$versions.slf4j"
+        "org.slf4j:slf4j-api:$versions.slf4j",
+        "org.springframework:spring-jdbc:$versions.spring.framework",
+        "org.springframework.data:spring-data-commons:$versions.spring.data.core",
+		"org.hibernate.javax.persistence:hibernate-jpa-2.1-api:$versions.javax.jpa",
+		"org.hibernate:hibernate-core:$versions.hibernate.core"
 
     testCompile "org.jetbrains.kotlin:kotlin-test:$versions.kotlin",
         "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"

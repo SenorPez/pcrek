@@ -5,11 +5,23 @@ buildscript {
 		slf4j : '1.7.21',
 		log4j : '2.6.2',
 		spring: [
-			framework: '4.3.1.RELEASE'
+			framework: '4.3.1.RELEASE',
+			data     : [
+				core: '1.12.2.RELEASE',
+				jpa : '1.10.2.RELEASE'
+			]
 		],
 		seis  : [
 			macAppBundle: '2.1.6',
-			launch4j: '1.6.2'
+			launch4j    : '1.6.2'
+		],
+		h2    : '1.4.192',
+		hikari: '2.4.7',
+		javax : [
+		    jpa: '1.0.0.Final'
+		],
+		hibernate : [
+		    core: '5.1.0.Final'
 		]
 	]
 
@@ -45,9 +57,7 @@ macAppBundle {
 
 launch4j {
 	mainClassName = project.mainClassName
-//	jreMinVersion = "0.${versions.java}"
 }
-
 
 idea {
 	project {
@@ -77,12 +87,20 @@ dependencies {
 		"org.slf4j:slf4j-ext:$versions.slf4j",
 		"org.springframework:spring-core:$versions.spring.framework",
 		"org.springframework:spring-context:$versions.spring.framework",
-		"org.springframework:spring-beans:$versions.spring.framework"
+		"org.springframework:spring-beans:$versions.spring.framework",
+		"org.springframework:spring-jdbc:$versions.spring.framework",
+		"com.zaxxer:HikariCP:$versions.hikari",
+		"org.springframework.data:spring-data-jpa:$versions.spring.data.jpa",
+		"org.springframework.data:spring-data-commons:$versions.spring.data.core",
+		"org.hibernate.javax.persistence:hibernate-jpa-2.1-api:$versions.javax.jpa"
 
 	runtime "org.apache.logging.log4j:log4j-core:$versions.log4j",
 		"org.apache.logging.log4j:log4j-slf4j-impl:$versions.log4j",
 		"org.slf4j:jcl-over-slf4j:$versions.slf4j",
-		"org.slf4j:log4j-over-slf4j:$versions.slf4j"
+		"org.slf4j:log4j-over-slf4j:$versions.slf4j",
+		"com.h2database:h2:$versions.h2",
+		"org.hibernate:hibernate-core:$versions.hibernate.core",
+		"org.hibernate:hibernate-entitymanager:$versions.hibernate.core"
 
 	testCompile "org.jetbrains.kotlin:kotlin-test:$versions.kotlin",
 		"org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
