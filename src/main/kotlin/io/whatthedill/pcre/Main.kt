@@ -62,11 +62,11 @@ internal class Main : Application() {
         LOGGER.trace("application context loaded")
         primaryStage.toFront()
 
-        FadeTransition(Duration.seconds(1.2), loading).apply {
-            this.fromValue = 1.toDouble()
-            this.toValue = 0.toDouble()
-            this.onFinished = EventHandler { primaryStage.close() }
-            this.play()
+        FadeTransition(Duration.seconds(1.2), loading).run {
+            fromValue = 1.toDouble()
+            toValue = 0.toDouble()
+            onFinished = EventHandler { primaryStage.close() }
+            play()
         }
 
         val mainStage = applicationContext.getBean("mainStage", Stage::class.java)
