@@ -98,10 +98,10 @@ internal class Main : Application() {
 
     override fun stop() {
         super.stop()
-        applicationContext.apply {
+        applicationContext.run {
             LOGGER.debug("Closing application context...")
             if (this.isActive) {
-                this.stop()
+                this.close()
             }
             LOGGER.trace("Application context closed")
         }

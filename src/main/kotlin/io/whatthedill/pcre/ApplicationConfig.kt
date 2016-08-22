@@ -18,11 +18,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator
+import org.springframework.orm.jpa.JpaTransactionManager
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
 import org.springframework.orm.jpa.vendor.Database
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter
+import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.io.File
+import javax.persistence.EntityManagerFactory
 import javax.sql.DataSource
 
 @Configuration
@@ -50,13 +53,13 @@ open class ApplicationConfig {
         }
     }
 
-    @Bean(destroyMethod = "shutdown")
+    @Bean(destroyMethod = "close")
     open fun datasource(
             @Value("classpath:/io/whatthedill/pcre/telemetry/telemetry-session.sql") telemetry: Resource
     ): HikariDataSource {
         val hikariDataSource = HikariDataSource(
                 HikariConfig().apply {
-                    jdbcUrl = "jdbc:h2:file:~/.pcre/db;FILE_LOCK=FS"
+                    jdbcUrl = "jdbc:h2:file:~/.pcre/db/pcrek"
                     minimumIdle = 3
                     maximumPoolSize = 3
                 }
@@ -72,8 +75,10 @@ open class ApplicationConfig {
     }
 
     @Bean
-    open fun transactionManager(@Autowired dataSource: DataSource): DataSourceTransactionManager {
-        return DataSourceTransactionManager(dataSource)
+    open fun transactionManager(@Autowired entityManagerFactory: EntityManagerFactory): PlatformTransactionManager {
+        return JpaTransactionManager().apply {
+            this.entityManagerFactory = entityManagerFactory
+        }
     }
 
     @Bean
@@ -87,18 +92,18 @@ open class ApplicationConfig {
     }
 
     @Bean
-    open fun entityManagerFactory(@Autowired dataSource: DataSource): LocalContainerEntityManagerFactoryBean {
-
+    open fun entityManagerFactory(@Autowired dataSource: DataSource): EntityManagerFactory {
         val vendorAdapter = HibernateJpaVendorAdapter()
         vendorAdapter.setDatabase(Database.H2)
         vendorAdapter.setGenerateDdl(true)
 
         val factory = LocalContainerEntityManagerFactoryBean()
-        factory.setJpaVendorAdapter(vendorAdapter)
-        factory.setPackagesToScan(javaClass.`package`.name)
-        factory.setDataSource(dataSource)
+        factory.jpaVendorAdapter = vendorAdapter
+        factory.setPackagesToScan("io.whatthedill.pcre")
+        factory.dataSource = dataSource
+        factory.afterPropertiesSet()
 
-        return factory
+        return factory.`object`
     }
 
     companion object {

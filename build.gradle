@@ -76,6 +76,10 @@ repositories {
 	jcenter()
 }
 
+run {
+	jvmArgs "-Dspring.jpa.hibernate.ddl-auto=none"
+}
+
 configurations {
 	compile.transitive = false
 }
